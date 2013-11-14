@@ -201,8 +201,22 @@ void ComputeHomography(CTransform3x3 &H, CTransform3x3 &Hinv, const vector<SVMPo
 
     /******** BEGIN TODO ********/
     /* Fill in the A matrix for the call to MinEig */
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	for (i = 0; i < numPoints; i++)
+	{
+		A(2*i,0) = basisPts[i][0];
+		A(2*i,1) = basisPts[i][1];
+		A(2*i,2) = 1;
+		A(2*i,6) = - points[i].u * basisPts[i][0];
+		A(2*i,7) = - points[i].u * basisPts[i][1];
+		A(2*i,8) = - points[i].u;
 
+		A(2*i+1,3) = basisPts[i][0];
+		A(2*i+1,4) = basisPts[i][1];
+		A(2*i+1,5) = 1;
+		A(2*i+1,6) = - points[i].v * basisPts[i][0];
+		A(2*i+1,7) = - points[i].v * basisPts[i][1];
+		A(2*i+1,8) = - points[i].v;
+	}
 
     double eval, h[9];
     MinEig(A, eval, h);
