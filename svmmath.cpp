@@ -77,8 +77,6 @@ SVMPoint BestFitIntersect(const std::list<SVMLine> &lines, int imgWidth, int img
 	MinEig(A,eval,evec);
 	bestfit.u=evec[0]/evec[2];bestfit.v=evec[1]/evec[2];bestfit.w=evec[2];
 
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
     /******** END TODO ********/
 	
     return bestfit;
@@ -97,7 +95,64 @@ void ConvertToPlaneCoordinate(const vector<SVMPoint>& points, vector<Vec3d>& bas
     int numPoints = points.size();
 
     /******** BEGIN TODO ********/
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
+	// Choose p,q,r from points to define a unique plane
+	Vec4d r = Vec4d(points[0].X, points[0].Y, points[0].Z, points[0].W);
+	Vec4d p = Vec4d(points[1].X, points[1].Y, points[1].Z, points[1].W);
+	Vec4d q;
+
+	Vec4d rp = p - r;
+	rp.normalize();
+	
+	// Initialize as worst
+	double best_angleCOS = 1.0;
+
+	// Loop to find the best q s.t. angle(rp,rq)->90 degrees, i.e. dot(rp/|rp|,rq/|rq|)->0
+	for (int cnt_q = 2; cnt_q < numPoints; cnt_q++)
+	{
+		Vec4d qTmp = Vec4d(points[cnt_q].X, points[cnt_q].Y, points[cnt_q].Z, points[cnt_q].W);
+		Vec4d rqTmp = qTmp - r;
+		rqTmp.normalize();
+		// Compute the angle between rp and rq
+		double angleCOS = rp * rqTmp;
+		if (abs(angleCOS) < abs(best_angleCOS))
+		{
+			best_angleCOS = angleCOS;
+			q = qTmp;
+		}
+	}
+	
+	Vec4d rq = q - r;
+
+	// Normalized already
+	Vec4d e_x = rp;
+	Vec4d s = (rq * e_x) * e_x;
+	Vec4d t = rq - s;
+	Vec4d e_y = t;
+	e_y.normalize();
+
+	// Ready for u,v
+	double u_min = FLT_MAX, v_min = FLT_MAX;
+	double u_max = 0, v_max = 0;
+
+	for (int cnt_a = 0; cnt_a < numPoints; cnt_a++)
+	{
+		Vec4d a = Vec4d(points[cnt_a].X, points[cnt_a].Y, points[cnt_a].Z, points[cnt_a].W);
+		Vec4d ra = a - r;
+		Vec3d Coord2D = Vec3d(ra*e_x, ra*e_y, 1.0);
+		basisPts.push_back(Coord2D);
+		if (Coord2D[0] < u_min)
+			u_min = Coord2D[0];
+		if (Coord2D[0] > u_max)
+			u_max = Coord2D[0];
+		if (Coord2D[1] < v_min)
+			v_min = Coord2D[1];
+		if (Coord2D[1] > v_max)
+			v_max = Coord2D[1];
+	}
+
+	// Output
+	uScale = u_max - u_min;
+	vScale = v_max - v_min;
 
     /******** END TODO ********/
 }
