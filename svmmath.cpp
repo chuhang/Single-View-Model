@@ -75,8 +75,14 @@ SVMPoint BestFitIntersect(const std::list<SVMLine> &lines, int imgWidth, int img
 	double evec[3];
 	double eval;
 	MinEig(A,eval,evec);
-	bestfit.u=evec[0]/evec[2];bestfit.v=evec[1]/evec[2];bestfit.w=evec[2];
-
+	if ((evec[2]>1e-10) || (evec[2]<-1e-10))
+	{
+		bestfit.u=evec[0]/evec[2];bestfit.v=evec[1]/evec[2];bestfit.w=1;
+	}
+	else
+	{
+		bestfit.u=evec[0];bestfit.v=evec[1];bestfit.w=evec[2];
+	}
     /******** END TODO ********/
 	
     return bestfit;
@@ -113,7 +119,8 @@ void ConvertToPlaneCoordinate(const vector<SVMPoint>& points, vector<Vec3d>& bas
 		Vec4d rqTmp = qTmp - r;
 		rqTmp.normalize();
 		// Compute the angle between rp and rq
-		double angleCOS = rp * rqTmp;
+		//double angleCOS = rp * rqTmp;
+		double angleCOS = (rp[0] * rqTmp[0])+(rp[1] * rqTmp[1])+(rp[2] * rqTmp[2])+(rp[3] * rqTmp[3]);
 		if (abs(angleCOS) < abs(best_angleCOS))
 		{
 			best_angleCOS = angleCOS;
@@ -125,7 +132,9 @@ void ConvertToPlaneCoordinate(const vector<SVMPoint>& points, vector<Vec3d>& bas
 
 	// Normalized already
 	Vec4d e_x = rp;
-	Vec4d s = (rq * e_x) * e_x;
+	//Vec4d s = (rq * e_x) * e_x;
+	double num1=(rq[0] * e_x[0])+(rq[1] * e_x[1])+(rq[2] * e_x[2])+(rq[3] * e_x[3]);
+	Vec4d s=Vec4d(e_x[0]*num1,e_x[1]*num1,e_x[2]*num1,e_x[3]*num1);
 	Vec4d t = rq - s;
 	Vec4d e_y = t;
 	e_y.normalize();
@@ -138,7 +147,10 @@ void ConvertToPlaneCoordinate(const vector<SVMPoint>& points, vector<Vec3d>& bas
 	{
 		Vec4d a = Vec4d(points[cnt_a].X, points[cnt_a].Y, points[cnt_a].Z, points[cnt_a].W);
 		Vec4d ra = a - r;
-		Vec3d Coord2D = Vec3d(ra*e_x, ra*e_y, 1.0);
+		//Vec3d Coord2D = Vec3d(ra*e_x, ra*e_y, 1.0);
+		double num1=(ra[0] * e_x[0])+(ra[1] * e_x[1])+(ra[2] * e_x[2])+(ra[3] * e_x[3]);
+		double num2=(ra[0] * e_y[0])+(ra[1] * e_y[1])+(ra[2] * e_y[2])+(ra[3] * e_y[3]);
+		Vec3d Coord2D = Vec3d(num1, num2, 1.0);
 		basisPts.push_back(Coord2D);
 		if (Coord2D[0] < u_min)
 			u_min = Coord2D[0];
