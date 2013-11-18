@@ -128,11 +128,18 @@ void ImgView::sameZPlane()
         Vec3d vx=Vec3d(xVanish.u,xVanish.v,xVanish.w);
         Vec3d vy=Vec3d(yVanish.u,yVanish.v,yVanish.w);
         Vec3d vz=Vec3d(zVanish.u,zVanish.v,zVanish.w);      
-        Vec3d t1b1=cross(t1,vz);
+        // vertical line passing through the newpoint
+		Vec3d t1b1=cross(t1,vz);
+		// horizon
         Vec3d horizon=cross(vx,vy);
+		// vanishing point
         Vec3d v=cross(cross(t1,m0),horizon);               
         Vec3d b0=matH*Vec3d(knownPoint.X,knownPoint.Y,1);
-        b1=cross(cross(b0,v),t1b1);               
+        // if t1m0 parallel to horizon
+		if (v[0]==0 && v[1]==0 && v[2]==0)
+			b1 = cross(b0,t1b1);
+		else
+			b1=cross(cross(b0,v),t1b1);
     }
 
     b1[0]=b1[0]/b1[2];
