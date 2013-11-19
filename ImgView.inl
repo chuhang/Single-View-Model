@@ -77,6 +77,10 @@ void ImgView::sameXY()
 	
 	double crossratio=sqrt((t-b)*(t-b)) * sqrt((vz-r)*(vz-r)) / sqrt((r-b)*(r-b)) / sqrt((vz-t)*(vz-t));
 	double h=crossratio*referenceHeight;
+	Vec3d b0t0 = t0 - b0;
+	Vec3d bvz = vz - b;
+	double dotprdt = b0t0[0]*bvz[0] + b0t0[1]*bvz[1] + b0t0[2]*bvz[2];
+	if (dotprdt < 0) h *= -1;
 
 	newPoint.X=knownPoint.X;
 	newPoint.Y=knownPoint.Y;
