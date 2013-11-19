@@ -38,9 +38,6 @@ void ImgView::solveForOppositeCorners(double u0, double v0, double u2, double v2
     v1=p1[1]/p1[2];
     u3=p3[0]/p3[2];
     v3=p3[1]/p3[2];
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
     /********* END TODO ********/
 }
 
@@ -85,10 +82,6 @@ void ImgView::solveForOppositeFace(SVMSweep *sweep, double imgX, double imgY,
     p5=cross(cross(p1,vy),cross(pMouse,vx));
     p6=cross(cross(p2,vy),cross(p5,vz));
     p7=cross(cross(p3,vy),cross(p4,vz));
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
-
     /******** END TODO ********/
 
     p4_out = p4;
@@ -139,10 +132,6 @@ void ImgView::find3DPositionsBox(SVMPoint *points[8])
     sameXY();
     pntSelStack.pop_back();
     pntSelStack.pop_back();
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
-
 	/********* END TODO ********/
 }
 

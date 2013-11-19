@@ -67,10 +67,6 @@ void ImgView::computeCameraParameters()
     x_cam=cameraPoint.X;
     y_cam=cameraPoint.Y;
     z_cam=hPoint.Z;
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
-
     /******** END TODO Part 1 ********/
 
     camPos[0] = x_cam;

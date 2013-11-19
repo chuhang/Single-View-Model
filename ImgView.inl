@@ -56,9 +56,20 @@ void ImgView::sameXY()
 	Vec3d b0=matH*Vec3d(knownPoint.X,knownPoint.Y,1);
 	Vec3d b=matH*Vec3d(refPointOffPlane->X,refPointOffPlane->Y,1);
 	Vec3d v=cross(cross(b,b0),horizon);
-	Vec3d rb=cross(r,b);
-	Vec3d t=cross(cross(v,t0),rb);
+	printf( "the v: (%e, %e, %e)\n", v[0], v[1], v[2] );
+	Vec3d t;
+	if (v[0]==0 && v[1]==0 && v[2]==0)
+	{
+		t=t0-b0+b;
+	}
+	else
+	{
+		Vec3d rb=cross(r,b);
+		t=cross(cross(v,t0),rb);
+	}
+	printf( "the t: (%e, %e, %e)\n", t[0], b[1], r[2] );
 
+	//printf( "the weights: (%e, %e, %e)\n", t[2], b[2], r[2] );
 	t[0]=t[0]/t[2];t[1]=t[1]/t[2];t[2]=1;
 	b[0]=b[0]/b[2];b[1]=b[1]/b[2];b[2]=1;
 	vz[0]=vz[0]/vz[2];vz[1]=vz[1]/vz[2];vz[2]=1;
@@ -71,12 +82,7 @@ void ImgView::sameXY()
 	newPoint.Y=knownPoint.Y;
 	newPoint.Z=h;
 	newPoint.W=1;
-
-	// printf("sameXY() to be implemented!\n");
-
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
+	printf("sameXY!\n");
 	/******** END TODO ********/
 
 	newPoint.known(true);
@@ -150,9 +156,7 @@ void ImgView::sameZPlane()
     newPoint.Y=nP[1]/nP[2];
     newPoint.Z=knownPoint.Z;
     newPoint.W=1;
-
-printf("TODO: %s:%d\n", __FILE__, __LINE__); 
-
+	printf("sameZPlane!\n");
 	/******** END TODO ********/
 
 	newPoint.known(true);
